@@ -13,12 +13,10 @@ import { Configuration, OpenAIApi } from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@supabase/supabase-js";
 import Constants from "expo-constants";
-
 const supabase = createClient(
   Constants.expoConfig.extra.SUPABASE_URL,
   Constants.expoConfig.extra.SUPABASE_KEY
 );
-
 const App = () => {
   const [formData, setFormData] = useState({
     toLanguage: "Spanish",
@@ -30,7 +28,6 @@ const App = () => {
   const [translation, setTranslation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [previousTranslations, setPreviousTranslations] = useState([]);
-
   const googleGenAI = new GoogleGenerativeAI(
     Constants.expoConfig.extra.GOOGLE_API_KEY
   );
@@ -38,7 +35,6 @@ const App = () => {
     apiKey: Constants.expoConfig.extra.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
-
   const deepLLanguageCodes = {
     Spanish: "ES",
     French: "FR",
@@ -62,19 +58,16 @@ const App = () => {
     Indonesian: "ID",
     Malay: "MS",
   };
-
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     setError("");
   };
-
   const translateWithDeepL = async (text, toLang) => {
     try {
       const targetLangCode = deepLLanguageCodes[toLang];
       if (!targetLangCode) {
         throw new Error(`Unsupported language: ${toLang}`);
       }
-
       const response = await fetch("https://api-free.deepl.com/v2/translate", {
         method: "POST",
         headers: {
@@ -87,13 +80,11 @@ const App = () => {
           target_lang: targetLangCode,
         }),
       });
-
       if (!response.ok) {
         throw new Error(
           `DeepL API request failed with status ${response.status}`
         );
       }
-
       const data = await response.json();
       return data.translations[0].text;
     } catch (error) {
@@ -101,31 +92,26 @@ const App = () => {
       throw new Error("Failed to translate with DeepL.");
     }
   };
-
   const fetchPreviousTranslations = async () => {
     const { data, error } = await supabase
       .from("translations")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(5);
-
     if (error) {
       console.error("Error fetching translations:", error);
     } else {
       setPreviousTranslations(data);
     }
   };
-
   useEffect(() => {
     fetchPreviousTranslations();
   }, []);
-
   const translate = async () => {
     const { toLanguage, message, model } = formData;
     try {
       setIsLoading(true);
       let translatedText = "";
-
       if (model.startsWith("gpt")) {
         const response = await openai.createChatCompletion({
           model: model,
@@ -148,7 +134,6 @@ const App = () => {
       } else if (model === "deepl") {
         translatedText = await translateWithDeepL(message, toLanguage);
       }
-
       setTranslation(translatedText);
     } catch (error) {
       console.error("Translation Error:", error);
@@ -157,7 +142,6 @@ const App = () => {
       setIsLoading(false);
     }
   };
-
   const handleOnSubmit = () => {
     if (!formData.message) {
       setError("Please enter the message.");
@@ -165,7 +149,6 @@ const App = () => {
     }
     translate();
   };
-
   const handleCopy = () => {
     Alert.alert("Copied to clipboard!", translation);
   };
@@ -183,13 +166,10 @@ const App = () => {
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button title="Translate" onPress={handleOnSubmit} />
       </View>
-
       {isLoading ? <Text>Loading...</Text> : <Text>{translation}</Text>}
-
       <TouchableOpacity onPress={handleCopy} style={styles.copyButton}>
         <Text style={styles.copyButtonText}>Copy to clipboard</Text>
       </TouchableOpacity>
-
       <FlatList
         data={previousTranslations}
         keyExtractor={(item) => item.id.toString()}
@@ -251,5 +231,4 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgray",
   },
 });
-
 export default App;
