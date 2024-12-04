@@ -33,7 +33,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "@expo/next-adapter": "^6.0.0"
+    "@expo/next-adapter": "^6.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2"
   },
   "scripts": {
     "start": "next dev",
