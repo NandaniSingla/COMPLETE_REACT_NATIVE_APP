@@ -6,7 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 import { Configuration, OpenAIApi } from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import CheckBox from '@react-native-community/checkbox'; // Import CheckBox
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -46,9 +45,10 @@ const App = () => {
     "gpt-4": ["Spanish", "French", "Telugu", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gpt-4-turbo": ["Spanish", "French", "Telugu", "Japanese", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Korean", "Arabic", "Swedish", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gemini-1.5-pro-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
-    "gemini- 1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gemini-1.5-pro-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
-    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic", "Swedish", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic", "Swedish", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese"
+    , "Indonesian", "Malay"],
     "deepl": ["Spanish", "French", "Japanese", "German", "Italian", "Dutch", "Russian", "Chinese (Simplified)", "Polish", "Portuguese", "Swedish", "Turkish", "Arabic", "Korean", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
   };
 
@@ -69,14 +69,12 @@ const App = () => {
     } else {
       setPreviousTranslations(data);
     }
-   
   };
 
   useEffect(() => {
     fetchPreviousTranslations();
   }, []);
 
-  
   const translate = async () => {
     const { language, message, model } = formData;
 
@@ -184,7 +182,7 @@ const App = () => {
         },
         body: new URLSearchParams({
           auth_key: Constants.expoConfig.extra.DEEPL_API_KEY,
-          text: text,
+          text : text,
           source_lang: "EN",
           target_lang: targetLangCode,
         }),
@@ -210,34 +208,34 @@ const App = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.sidebar}>
-  <Text style={styles.heading}>Models</Text>
-  <View style={styles.modelRow}>
-    {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001"].map((model) => (
-      <TouchableOpacity
-        key={model}
-        style={[styles.modelOption, formData.model === model && styles.active]}
-        onPress={() => handleInputChange("model", model)}
-      >
-        <Text style={{ color: '#000000' }}>{model}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-  <View style={styles.modelRow}>
-    {["gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
-      <TouchableOpacity
-        key={model}
-        style={[styles.modelOption, formData.model === model && styles.active]}
-        onPress={() => handleInputChange("model", model)}
-      >
-        <Text style={{ color: '#000000' }}>{model}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-</View>
+        <Text style={styles.heading}>Models</Text>
+        <View style={styles.modelRow}>
+          {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001"].map((model) => (
+            <TouchableOpacity
+              key={model}
+              style={[styles.modelOption, formData.model === model && styles.active]}
+              onPress={() => handleInputChange("model", model)}
+            >
+              <Text style={styles.modelText}>{model}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.modelRow}>
+          {["gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
+            <TouchableOpacity
+              key={model}
+              style={[styles.modelOption, formData.model === model && styles.active]}
+              onPress={() => handleInputChange("model", model)}
+            >
+              <Text style={styles.modelText}>{model}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
 
       <View style={styles.main}>
         <Text style={styles.title}>Translation App</Text>
-        <Text>Selected Model: {formData.model}</Text>
+        <Text style={styles.selectedModel}>Selected Model: {formData.model}</Text>
 
         <Picker
           selectedValue={formData.language}
@@ -256,9 +254,9 @@ const App = () => {
           onChangeText={(text) => handleInputChange('message', text)}
         />
 
-        <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} />
+        <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} color="#6200ee" />
 
-        {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+        {isLoading && <ActivityIndicator size="large" color="#6200ee" />}
 
         {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -267,38 +265,39 @@ const App = () => {
         )}
 
         <Text style={styles.heading}>Previous Translations</Text>
-{previousTranslations.length > 0 ? (
-  <View style={styles.table}>
-    <View style={styles.tableHeader}>
-      <Text style={styles.tableHeaderCell}>Original</Text>
-      <Text style={styles.tableHeaderCell}>Translated</Text>
-      <Text style={styles.tableHeaderCell}>Language</Text>
-      <Text style={styles.tableHeaderCell}>Model</Text>
-      <Text style={styles.tableHeaderCell}>Date</Text>
-    </View>
-    <FlatList
-      data={previousTranslations}
-      keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
-      renderItem={({ item }) => (
-        <View style={styles.tableRow}>
-          <Text style={styles.tableCell}>{item.original_message}</Text>
-          <Text style={styles.tableCell}>{item.translated_message}</Text>
-          <Text style={styles.tableCell}>{item.language}</Text>
-          <Text style={styles.tableCell}>{item.model}</Text>
-          <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
-        </View>
-      )}
-    />
-  </View>
-) : (
-  <Text>No previous translations found.</Text>
-)}
+        {previousTranslations.length > 0 ? (
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableHeaderCell}>Original</Text>
+              <Text style={styles.tableHeaderCell}>Translated</Text>
+              <Text style={styles.tableHeaderCell}>Language</Text>
+              <Text style={styles.tableHeaderCell}>Model</Text>
+              <Text style={styles.tableHeaderCell}>Date</Text>
+            </View>
+            <FlatList
+              data={previousTranslations}
+              keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
+              renderItem={({ item }) => (
+                <View style={styles.tableRow}>
+                  <Text style={styles.tableCell}>{item.original_message}</Text>
+                  <Text style={styles.tableCell}>{item.translated_message}</Text>
+                  <Text style={styles.tableCell}>{item.language}</Text>
+                  <Text style={styles.tableCell}>{item.model}</Text>
+                  <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
+                </View>
+              )}
+            />
+          </View>
+        ) : (
+          <Text>No previous translations found.</Text>
+        )}
       </View>
       <CompareTranslate />
       <StatusBar style="auto" />
     </ScrollView>
   );
 };
+
 const CompareTranslate = () => {
   const [formData, setFormData] = useState({
     message: '',
@@ -327,10 +326,12 @@ const CompareTranslate = () => {
     Portuguese: 'PT',
     Polish: 'PL',
   };
+
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     setError('');
   };
+
   const handleModelChange = (model) => {
     setFormData((prevState) => {
       const models = prevState.models.includes(model)
@@ -339,6 +340,7 @@ const CompareTranslate = () => {
       return { ...prevState, models };
     });
   };
+
   const translateWithDeepL = async (text, toLang) => {
     try {
       const targetLangCode = deepLLanguageCodes[toLang];
@@ -360,6 +362,7 @@ const CompareTranslate = () => {
       throw new Error('Failed to translate with DeepL.');
     }
   };
+
   const translate = async (model) => {
     const { toLanguage, message, tone } = formData;
     setIsLoading(true);
@@ -391,6 +394,7 @@ const CompareTranslate = () => {
       setIsLoading(false);
     }
   };
+
   const handleOnSubmit = async () => {
     if (!formData.message) {
       setError('Please enter the message.');
@@ -421,16 +425,17 @@ const CompareTranslate = () => {
       setIsLoading(false);
     }
   };
+
   const models = [
     'gemini-1.5-pro-001',
     'gemini-1.5-flash-001',
     'gemini-1.5-pro-002',
-    'gemini-1.5-flash-002',
+    'gemini-1.5-fl ash-002',
   ];
+
   return (
     <View style={styles.container}>
-      <Text 
-      style={styles.title}>Compare Translations</Text>
+      <Text style={styles.title}>Compare Translations</Text>
       <TextInput
         style={styles.textInput}
         placeholder="Enter text to translate"
@@ -453,11 +458,11 @@ const CompareTranslate = () => {
           style={styles.modelOption}
           onPress={() => handleModelChange(model)}
         >
-          <Text style={{ color: formData.models.includes(model) ? '#0000ff' : '#000' }}>{model}</Text>
+          <Text style={{ color: formData.models.includes(model) ? '#6200ee' : '#000' }}>{model}</Text>
         </TouchableOpacity>
       ))}
-      <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} />
-      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+      <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} color="#6200ee" />
+      {isLoading && <ActivityIndicator size="large" color="#6200ee" />}
       {error && <Text style={styles.errorText}>{error}</Text>}
       {Object.keys(translations).length > 0 && (
         <View style={styles.results}>
@@ -476,30 +481,52 @@ const CompareTranslate = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#6200ee',
   },
   subTitle: {
     fontSize: 18,
     marginVertical: 10,
+    color: '#6200ee',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#6200ee',
     padding: 10,
     marginBottom: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff',
   },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 10,
+    backgroundColor: '#fff',
+    borderColor: '#6200ee',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  modelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   modelOption: {
+    flex: 1,
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderWidth: 1,
+    borderColor: "#6200ee",
+    marginHorizontal: 5,
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#fff',
+  },
+  active: {
+    backgroundColor: "#e0e0e0",
   },
   results: {
     marginTop: 20,
@@ -509,37 +536,22 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 16,
+    color: '#000',
   },
   errorText: {
     color: 'red',
   },
-  modelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Distribute space evenly
-    marginBottom: 10, // Add some space between rows
-  },
-  modelOption: {
-    flex: 1, // Allow each model option to take equal space
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: 5, // Add horizontal margin between buttons
-    alignItems: 'center', // Center the text
-  },
-  active: {
-    backgroundColor: "#e0e0e0",
-  },
   table: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#6200ee',
     borderRadius: 5,
     overflow: 'hidden',
     marginTop: 10,
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#6200ee',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
@@ -548,8 +560,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: 'bold',
     textAlign: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#ddd',
+    color: '#fff',
   },
   tableRow: {
     flexDirection: 'row',
@@ -563,26 +574,8 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: '#ddd',
   },
-  // Remove the right border for the last cell in each row
   tableCellLast: {
     borderRightWidth: 0,
-  },
-  modelContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Distribute space evenly
-    marginBottom: 10, // Add some space below the models
-  },
-  modelOption: {
-    flex: 1, // Allow each model option to take equal space
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginHorizontal: 5, // Add horizontal margin between buttons
-    alignItems: 'center', // Center the text
-    borderRadius: 5, // Optional: add rounded corners
-  },
-  active: {
-    backgroundColor: "#e0e0e0", // Optional: highlight active model
   },
 });
 
