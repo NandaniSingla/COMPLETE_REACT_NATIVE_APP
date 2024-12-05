@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import Constants from 'expo-constants';
 import { Configuration, OpenAIApi } from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import CheckBox from '@react-native-community/checkbox'; // Import CheckBox
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -35,7 +36,7 @@ const App = () => {
     message: '',
   });
   const [translation, setTranslation] = useState('');
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [previousTranslations, setPreviousTranslations] = useState([]);
@@ -45,10 +46,9 @@ const App = () => {
     "gpt-4": ["Spanish", "French", "Telugu", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gpt-4-turbo": ["Spanish", "French", "Telugu", "Japanese", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Korean", "Arabic", "Swedish", "Turkish", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gemini-1.5-pro-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
-    "gemini-1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
+    "gemini- 1.5-flash-001": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Swedish", "Turkish", "Arabic", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "gemini-1.5-pro-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Swedish", "Arabic", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
-    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic", "Swedish", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese"
-    , "Indonesian", "Malay"],
+    "gemini-1.5-flash-002": ["Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese (Simplified)", "Japanese", "Korean", "Arabic", "Swedish", "Turkish", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
     "deepl": ["Spanish", "French", "Japanese", "German", "Italian", "Dutch", "Russian", "Chinese (Simplified)", "Polish", "Portuguese", "Swedish", "Turkish", "Arabic", "Korean", "Hindi", "Greek", "Hebrew", "Thai", "Vietnamese", "Indonesian", "Malay"],
   };
 
@@ -69,11 +69,15 @@ const App = () => {
     } else {
       setPreviousTranslations(data);
     }
+
   };
 
   useEffect(() => {
     fetchPreviousTranslations();
   }, []);
+
+
+
 
   const translate = async () => {
     const { language, message, model } = formData;
@@ -182,7 +186,7 @@ const App = () => {
         },
         body: new URLSearchParams({
           auth_key: Constants.expoConfig.extra.DEEPL_API_KEY,
-          text : text,
+          text: text,
           source_lang: "EN",
           target_lang: targetLangCode,
         }),
@@ -208,34 +212,34 @@ const App = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.sidebar}>
-        <Text style={styles.heading}>Models</Text>
-        <View style={styles.modelRow}>
-          {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001"].map((model) => (
-            <TouchableOpacity
-              key={model}
-              style={[styles.modelOption, formData.model === model && styles.active]}
-              onPress={() => handleInputChange("model", model)}
-            >
-              <Text style={styles.modelText}>{model}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.modelRow}>
-          {["gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
-            <TouchableOpacity
-              key={model}
-              style={[styles.modelOption, formData.model === model && styles.active]}
-              onPress={() => handleInputChange("model", model)}
-            >
-              <Text style={styles.modelText}>{model}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
+  <Text style={styles.heading}>Models</Text>
+  <View style={styles.modelRow}>
+    {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001"].map((model) => (
+      <TouchableOpacity
+        key={model}
+        style={[styles.modelOption, formData.model === model && styles.active]}
+        onPress={() => handleInputChange("model", model)}
+      >
+        <Text style={{ color: '#000000' }}>{model}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+  <View style={styles.modelRow}>
+    {["gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
+      <TouchableOpacity
+        key={model}
+        style={[styles.modelOption, formData.model === model && styles.active]}
+        onPress={() => handleInputChange("model", model)}
+      >
+        <Text style={{ color: '#000000' }}>{model}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</View>
 
       <View style={styles.main}>
         <Text style={styles.title}>Translation App</Text>
-        <Text style={styles.selectedModel}>Selected Model: {formData.model}</Text>
+        <Text>Selected Model: {formData.model}</Text>
 
         <Picker
           selectedValue={formData.language}
@@ -254,9 +258,9 @@ const App = () => {
           onChangeText={(text) => handleInputChange('message', text)}
         />
 
-        <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} color="#6200ee" />
+        <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} />
 
-        {isLoading && <ActivityIndicator size="large" color="#6200ee" />}
+        {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
 
         {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -265,39 +269,39 @@ const App = () => {
         )}
 
         <Text style={styles.heading}>Previous Translations</Text>
-        {previousTranslations.length > 0 ? (
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderCell}>Original</Text>
-              <Text style={styles.tableHeaderCell}>Translated</Text>
-              <Text style={styles.tableHeaderCell}>Language</Text>
-              <Text style={styles.tableHeaderCell}>Model</Text>
-              <Text style={styles.tableHeaderCell}>Date</Text>
-            </View>
-            <FlatList
-              data={previousTranslations}
-              keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
-              renderItem={({ item }) => (
-                <View style={styles.tableRow}>
-                  <Text style={styles.tableCell}>{item.original_message}</Text>
-                  <Text style={styles.tableCell}>{item.translated_message}</Text>
-                  <Text style={styles.tableCell}>{item.language}</Text>
-                  <Text style={styles.tableCell}>{item.model}</Text>
-                  <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
-                </View>
-              )}
-            />
-          </View>
-        ) : (
-          <Text>No previous translations found.</Text>
-        )}
+{previousTranslations.length > 0 ? (
+  <View style={styles.table}>
+    <View style={styles.tableHeader}>
+      <Text style={styles.tableHeaderCell}>Original</Text>
+      <Text style={styles.tableHeaderCell}>Translated</Text>
+      <Text style={styles.tableHeaderCell}>Language</Text>
+      <Text style={styles.tableHeaderCell}>Model</Text>
+      <Text style={styles.tableHeaderCell}>Date</Text>
+    </View>
+    <FlatList
+      data={previousTranslations}
+      keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
+      renderItem={({ item }) => (
+        <View style={styles.tableRow}>
+          <Text style={styles.tableCell}>{item.original_message}</Text>
+          <Text style={styles.tableCell}>{item.translated_message}</Text>
+          <Text style={styles.tableCell}>{item.language}</Text>
+          <Text style={styles.tableCell}>{item.model}</Text>
+          <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
+        </View>
+      )}
+    />
+  </View>
+) : (
+  <Text>No previous translations found.</Text>
+)}
       </View>
+
       <CompareTranslate />
       <StatusBar style="auto" />
     </ScrollView>
   );
 };
-
 const CompareTranslate = () => {
   const [formData, setFormData] = useState({
     message: '',
@@ -309,11 +313,13 @@ const CompareTranslate = () => {
   const [scores, setScores] = useState({});
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const genAI = new GoogleGenerativeAI(Constants.expoConfig.extra.GOOGLE_API_KEY);
   const configuration = new Configuration({
     apiKey: Constants.expoConfig.extra.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
+
   const deepLLanguageCodes = {
     Spanish: 'ES',
     French: 'FR',
@@ -333,6 +339,7 @@ const CompareTranslate = () => {
   };
 
   const handleModelChange = (model) => {
+    // const model = e.target.value;
     setFormData((prevState) => {
       const models = prevState.models.includes(model)
         ? prevState.models.filter((m) => m !== model)
@@ -354,7 +361,9 @@ const CompareTranslate = () => {
           target_lang: targetLangCode,
         }),
       });
+
       if (!response.ok) throw new Error(`DeepL API request failed`);
+
       const data = await response.json();
       return data.translations[0].text;
     } catch (error) {
@@ -367,6 +376,7 @@ const CompareTranslate = () => {
     const { toLanguage, message, tone } = formData;
     setIsLoading(true);
     let translatedText = '';
+
     try {
       if (model.startsWith('gpt')) {
         const response = await openai.createChatCompletion({
@@ -382,7 +392,7 @@ const CompareTranslate = () => {
         const genAIModel = genAI.getGenerativeModel({ model });
         const prompt = `Translate the text: "${message}" from English to ${toLanguage} with a ${tone.toLowerCase()} tone.`;
         const result = await genAIModel.generateContent(prompt);
-        translatedText = result.response.text;
+        translatedText = await result.response.text();
       } else if (model === 'deepl') {
         translatedText = await translateWithDeepL(message, toLanguage);
       }
@@ -390,8 +400,18 @@ const CompareTranslate = () => {
     } catch (error) {
       console.error('Translation Error:', error);
       setError('Translation failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+      return null;
+    } 
+  };
+  const saveComparison = async (originalMessage, translation, model, score) => {
+    try {
+      const { data, error } = await supabase
+        .from("compare_translations")
+        .insert([{ original_message: originalMessage, translated_message: translation, model, score }]);
+      if (error) throw error;
+      console.log("Comparison saved:", data);
+    } catch (error) {
+      console.error("Error saving comparison:", error);
     }
   };
 
@@ -400,22 +420,29 @@ const CompareTranslate = () => {
       setError('Please enter the message.');
       return;
     }
+
     setIsLoading(true);
     setTranslations({});
     setScores({});
+
     try {
       const promises = formData.models.map(async (model) => {
         const translation = await translate(model);
+        if (!translation) return null;
         const score = Math.floor(Math.random() * 10) + 1;
+        await saveComparison(formData.message, translation, model, score);
         return { model, translation, score };
       });
+
       const results = await Promise.all(promises);
       const translationResults = {};
       const scoreResults = {};
+
       results.forEach(({ model, translation, score }) => {
         translationResults[model] = translation;
         scoreResults[model] = score;
       });
+
       setTranslations(translationResults);
       setScores(scoreResults);
     } catch (err) {
@@ -426,11 +453,17 @@ const CompareTranslate = () => {
     }
   };
 
+  const supportedLanguages = [
+    "Spanish", "French", "German", "Italian", "Portuguese", "Dutch",
+    "Russian", "Chinese (Simplified)", "Japanese", "Korean",
+    "Arabic", "Turkish", "Hindi", "Greek", "Hebrew", "Thai",
+    "Vietnamese", "Indonesian", "Malay", "Polish"
+  ];
   const models = [
     'gemini-1.5-pro-001',
     'gemini-1.5-flash-001',
     'gemini-1.5-pro-002',
-    'gemini-1.5-fl ash-002',
+    'gemini-1.5-flash-002',
   ];
 
   return (
@@ -458,20 +491,31 @@ const CompareTranslate = () => {
           style={styles.modelOption}
           onPress={() => handleModelChange(model)}
         >
-          <Text style={{ color: formData.models.includes(model) ? '#6200ee' : '#000' }}>{model}</Text>
+          <Text style={{ color: formData.models.includes(model) ? '#0000ff' : '#000' }}>{model}</Text>
         </TouchableOpacity>
       ))}
-      <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} color="#6200ee" />
-      {isLoading && <ActivityIndicator size="large" color="#6200ee" />}
+      <Button title="Translate" onPress={handleOnSubmit} disabled={isLoading} />
+      {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
       {error && <Text style={styles.errorText}>{error}</Text>}
       {Object.keys(translations).length > 0 && (
         <View style={styles.results}>
           <Text style={styles.heading}>Translation Results:</Text>
-          {Object.entries(translations).map(([model, translation]) => (
-            <View key={model} style={styles.resultRow}>
-              <Text style={styles.resultText}>{model}: {translation} (Score: {scores[model]})</Text>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.headerText}>Original</Text>
+              <Text style={styles.headerText}>Model</Text>
+              <Text style={styles.headerText}>Translated</Text>
+              <Text style={styles.headerText}>Score</Text>
             </View>
-          ))}
+            {Object.entries(translations).map(([model, translation]) => (
+              <View key={model} style={styles.resultRow}>
+                <Text style={styles.resultText}>{formData.message}</Text>
+                <Text style={styles.resultText}>{model}</Text>
+                <Text style={styles.resultText}>{translation}</Text>
+                <Text style={styles.resultText}>{scores[model]}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
     </View>
@@ -481,53 +525,30 @@ const CompareTranslate = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#e0f7fa',
-    flex: 1,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#00796b',
   },
   subTitle: {
-    fontSize: 20,
+    fontSize: 18,
     marginVertical: 10,
-    color: '#00796b',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#4a90e2',
-    padding: 12,
+    borderColor: '#ccc',
+    padding: 10,
     marginBottom: 10,
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
   },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 10,
-    backgroundColor: '#ffffff',
-    borderColor: '#4a90e2',
-    borderWidth: 1,
-    borderRadius: 10,
-  },
-  modelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
   },
   modelOption: {
-    flex: 1,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#4a90e2",
-    marginHorizontal: 5,
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-  },
-  active: {
-    backgroundColor: "#b2ebf2",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   results: {
     marginTop: 20,
@@ -537,22 +558,37 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 16,
-    color: '#004d40',
   },
   errorText: {
     color: 'red',
   },
+  modelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Distribute space evenly
+    marginBottom: 10, // Add some space between rows
+  },
+  modelOption: {
+    flex: 1, // Allow each model option to take equal space
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginHorizontal: 5, // Add horizontal margin between buttons
+    alignItems: 'center', // Center the text
+  },
+  active: {
+    backgroundColor: "#e0e0e0",
+  },
   table: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#4a90e2',
-    borderRadius: 10,
+    borderColor: '#ddd',
+    borderRadius: 5,
     overflow: 'hidden',
     marginTop: 10,
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#f2f2f2',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
@@ -561,12 +597,13 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#ffffff',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor : '#ddd',
+    borderBottomColor: '#ddd',
   },
   tableCell: {
     flex: 1,
@@ -575,11 +612,59 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: '#ddd',
   },
+  // Remove the right border for the last cell in each row
   tableCellLast: {
     borderRightWidth: 0,
   },
+  modelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Distribute space evenly
+    marginBottom: 10, // Add some space below the models
+  },
+  modelOption: {
+    flex: 1, // Allow each model option to take equal space
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginHorizontal: 5, // Add horizontal margin between buttons
+    alignItems: 'center', // Center the text
+    borderRadius: 5, // Optional: add rounded corners
+  },
+  active: {
+    backgroundColor: "#e0e0e0", // Optional: highlight active model
+  },
+  table: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f2f2f2',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  headerText: {
+    flex: 1,
+    padding: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+  },
+  resultRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  resultText: {
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+  },
 });
-
-
 
 export default App;
