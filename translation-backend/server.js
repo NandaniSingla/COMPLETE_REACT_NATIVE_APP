@@ -44,7 +44,7 @@ app.post(" 192.168.56.1/api/translations", async (req, res) => {
 });
 
 // Endpoint to fetch previous translations
-app.get("192.168.56.1/api/translations", async (req, res) => {
+app.get(" 192.168.56.1/api/translations", async (req, res) => {
   try {
     // Fetch translations from the database
     const { data, error } = await supabase
@@ -75,7 +75,7 @@ app.post(" 192.168.56.1/api/compareTranslate", async (req, res) => {
   try {
     // Insert comparison translation into the database
     const { data, error } = await supabase
-      .from("compareTranslate") // Make sure the table exists in Supabase
+      .from(" 192.168.56.1/api/compareTranslate") // Make sure the table exists in Supabase
       .insert([{ original_message, translated_message, language, model, score }]);
 
     if (error) {
@@ -89,7 +89,7 @@ app.post(" 192.168.56.1/api/compareTranslate", async (req, res) => {
 });
 
 // Endpoint to fetch previous comparison translations
-app.get("192.168.56.1/api/compare-translations", async (req, res) => {
+app.get(" 192.168.56.1/api/compare-translations", async (req, res) => {
   try {
     // Fetch comparison translations from the database
     const { data, error } = await supabase
