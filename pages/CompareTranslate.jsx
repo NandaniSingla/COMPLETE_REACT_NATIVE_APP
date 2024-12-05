@@ -60,16 +60,18 @@ const CompareTranslate = () => {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          auth_key: import.meta.env.VITE_DEEPL_API_KEY,
+          auth_key: import.meta.env.DEEPL_API_KEY,
           text,
           source_lang: "EN",
           target_lang: targetLangCode,
         }),
       });
 
-      if (!response.ok) throw new Error(`DeepL API request failed`);
+      if (!response.ok) throw new Error(`DeepL API request failed :${response.statusText}`);
 
       const data = await response.json();
+      console.log("DeepL Response:", data);
+
       return data.translations[0].text;
     } catch (error) {
       console.error("DeepL Translation Error:", error);
@@ -83,6 +85,9 @@ const CompareTranslate = () => {
     let translatedText = "";
 
     try {
+      console.log(`Translating with model: ${model}`);
+      console.log(`Message: ${message}, To Language: ${toLanguage}, Tone: ${tone}`);
+
       if (model.startsWith("gpt")) {
         const response = await openai.createChatCompletion({
           model,
@@ -92,6 +97,8 @@ const CompareTranslate = () => {
           ],
           max_tokens: 100,
         });
+        console.log("OpenAI Response:", response);
+
         translatedText = response.data.choices[0].message.content.trim();
       } else if (model.startsWith("gemini")) {
         const genAIModel = googleGenAI.getGenerativeModel({ model });
@@ -101,6 +108,8 @@ const CompareTranslate = () => {
       } else if (model === "deepl") {
         translatedText = await translateWithDeepL(message, toLanguage);
       }
+      console.log(`Translated Text: ${translatedText}`);
+
       return translatedText;
     } catch (error) {
       console.error("Translation Error:", error);
@@ -136,6 +145,10 @@ const CompareTranslate = () => {
       setError("Please enter the message.");
       return;
     }
+    if (formData.models.length === 0) {
+      setError("Please select at least one translation model.");
+      return;
+    }
 
     setIsLoading(true);
     setTranslations({});
@@ -145,7 +158,7 @@ const CompareTranslate = () => {
       const promises = formData.models.map(async (model) => {
         const translation = await translate(model);
         const score = Math.floor(Math.random() * 10) + 1;
-        saveComparison(formData.message, translation, model, score);
+        await saveComparison(formData.message, translation, model, score);
         return { model, translation, score };
       });
 
@@ -220,7 +233,7 @@ const CompareTranslate = () => {
               value={formData.models.includes(model)}
               onValueChange={() => handleModelChange(model)}
             />
-            <Text>{model}</Text>
+            {model ? <Text>{model}</Text> : null} {/* Wrap in <Text> */}
           </View>
         ))}
       </View>

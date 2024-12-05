@@ -36,6 +36,7 @@ const App = () => {
     message: '',
   });
   const [translation, setTranslation] = useState('');
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [previousTranslations, setPreviousTranslations] = useState([]);
@@ -68,12 +69,14 @@ const App = () => {
     } else {
       setPreviousTranslations(data);
     }
+   
   };
 
   useEffect(() => {
     fetchPreviousTranslations();
   }, []);
 
+  
   const translate = async () => {
     const { language, message, model } = formData;
 
@@ -207,17 +210,30 @@ const App = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.sidebar}>
-        <Text style={styles.heading}>Models</Text>
-        {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001", "gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
-          <TouchableOpacity
-            key={model}
-            style={[styles.modelOption, formData.model === model && styles.active]}
-            onPress={() => handleInputChange("model", model)}
-          >
-            <Text style={{ color: '#000000' }}>{model}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+  <Text style={styles.heading}>Models</Text>
+  <View style={styles.modelRow}>
+    {["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gemini-1.5-pro-001"].map((model) => (
+      <TouchableOpacity
+        key={model}
+        style={[styles.modelOption, formData.model === model && styles.active]}
+        onPress={() => handleInputChange("model", model)}
+      >
+        <Text style={{ color: '#000000' }}>{model}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+  <View style={styles.modelRow}>
+    {["gemini-1.5-flash-001", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "deepl"].map((model) => (
+      <TouchableOpacity
+        key={model}
+        style={[styles.modelOption, formData.model === model && styles.active]}
+        onPress={() => handleInputChange("model", model)}
+      >
+        <Text style={{ color: '#000000' }}>{model}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</View>
 
       <View style={styles.main}>
         <Text style={styles.title}>Translation App</Text>
@@ -251,34 +267,33 @@ const App = () => {
         )}
 
         <Text style={styles.heading}>Previous Translations</Text>
-        {previousTranslations.length > 0 ? (
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.tableHeaderCell}>Original</Text>
-              <Text style={styles.tableHeaderCell}>Translated</Text>
-              <Text style={styles.tableHeaderCell}>Language</Text>
-              <Text style={styles.tableHeaderCell}>Model</Text>
-              <Text style={styles.tableHeaderCell}>Date</Text>
-            </View>
-            <FlatList
-              data={previousTranslations}
-              keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
-              renderItem={({ item }) => (
-                <View style={styles.tableRow}>
-                  <Text style={styles.tableCell}>{item.original_message}</Text>
-                  <Text style={styles.tableCell}>{item.translated_message}</Text>
-                  <Text style={styles.tableCell}>{item.language}</Text>
-                  <Text style={styles.tableCell}>{item.model}</Text>
-                  <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
-                </View>
-              )}
-            />
-          </View>
-        ) : (
-          <Text>No previous translations found.</Text>
-        )}
+{previousTranslations.length > 0 ? (
+  <View style={styles.table}>
+    <View style={styles.tableHeader}>
+      <Text style={styles.tableHeaderCell}>Original</Text>
+      <Text style={styles.tableHeaderCell}>Translated</Text>
+      <Text style={styles.tableHeaderCell}>Language</Text>
+      <Text style={styles.tableHeaderCell}>Model</Text>
+      <Text style={styles.tableHeaderCell}>Date</Text>
+    </View>
+    <FlatList
+      data={previousTranslations}
+      keyExtractor={(item) => item.id.toString()} // Assuming 'id' is a unique identifier
+      renderItem={({ item }) => (
+        <View style={styles.tableRow}>
+          <Text style={styles.tableCell}>{item.original_message}</Text>
+          <Text style={styles.tableCell}>{item.translated_message}</Text>
+          <Text style={styles.tableCell}>{item.language}</Text>
+          <Text style={styles.tableCell}>{item.model}</Text>
+          <Text style={styles.tableCell}>{new Date(item.created_at).toLocaleString()}</Text>
+        </View>
+      )}
+    />
+  </View>
+) : (
+  <Text>No previous translations found.</Text>
+)}
       </View>
-
       <CompareTranslate />
       <StatusBar style="auto" />
     </ScrollView>
@@ -295,13 +310,11 @@ const CompareTranslate = () => {
   const [scores, setScores] = useState({});
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
   const genAI = new GoogleGenerativeAI(Constants.expoConfig.extra.GOOGLE_API_KEY);
   const configuration = new Configuration({
     apiKey: Constants.expoConfig.extra.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
-
   const deepLLanguageCodes = {
     Spanish: 'ES',
     French: 'FR',
@@ -314,12 +327,10 @@ const CompareTranslate = () => {
     Portuguese: 'PT',
     Polish: 'PL',
   };
-
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     setError('');
   };
-
   const handleModelChange = (model) => {
     setFormData((prevState) => {
       const models = prevState.models.includes(model)
@@ -328,7 +339,6 @@ const CompareTranslate = () => {
       return { ...prevState, models };
     });
   };
-
   const translateWithDeepL = async (text, toLang) => {
     try {
       const targetLangCode = deepLLanguageCodes[toLang];
@@ -342,9 +352,7 @@ const CompareTranslate = () => {
           target_lang: targetLangCode,
         }),
       });
-
       if (!response.ok) throw new Error(`DeepL API request failed`);
-
       const data = await response.json();
       return data.translations[0].text;
     } catch (error) {
@@ -352,12 +360,10 @@ const CompareTranslate = () => {
       throw new Error('Failed to translate with DeepL.');
     }
   };
-
   const translate = async (model) => {
     const { toLanguage, message, tone } = formData;
     setIsLoading(true);
     let translatedText = '';
-
     try {
       if (model.startsWith('gpt')) {
         const response = await openai.createChatCompletion({
@@ -385,33 +391,27 @@ const CompareTranslate = () => {
       setIsLoading(false);
     }
   };
-
   const handleOnSubmit = async () => {
     if (!formData.message) {
       setError('Please enter the message.');
       return;
     }
-
     setIsLoading(true);
     setTranslations({});
     setScores({});
-
     try {
       const promises = formData.models.map(async (model) => {
         const translation = await translate(model);
         const score = Math.floor(Math.random() * 10) + 1;
         return { model, translation, score };
       });
-
       const results = await Promise.all(promises);
       const translationResults = {};
       const scoreResults = {};
-
       results.forEach(({ model, translation, score }) => {
         translationResults[model] = translation;
         scoreResults[model] = score;
       });
-
       setTranslations(translationResults);
       setScores(scoreResults);
     } catch (err) {
@@ -421,14 +421,12 @@ const CompareTranslate = () => {
       setIsLoading(false);
     }
   };
-
   const models = [
     'gemini-1.5-pro-001',
     'gemini-1.5-flash-001',
     'gemini-1.5-pro-002',
     'gemini-1.5-flash-002',
   ];
-
   return (
     <View style={styles.container}>
       <Text 
@@ -515,12 +513,77 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
   },
+  modelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Distribute space evenly
+    marginBottom: 10, // Add some space between rows
+  },
+  modelOption: {
+    flex: 1, // Allow each model option to take equal space
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginHorizontal: 5, // Add horizontal margin between buttons
+    alignItems: 'center', // Center the text
+  },
+  active: {
+    backgroundColor: "#e0e0e0",
+  },
+  table: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f2f2f2',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  tableHeaderCell: {
+    flex: 1,
+    padding: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  tableCell: {
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
+  },
+  // Remove the right border for the last cell in each row
+  tableCellLast: {
+    borderRightWidth: 0,
+  },
+  modelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Distribute space evenly
+    marginBottom: 10, // Add some space below the models
+  },
+  modelOption: {
+    flex: 1, // Allow each model option to take equal space
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginHorizontal: 5, // Add horizontal margin between buttons
+    alignItems: 'center', // Center the text
+    borderRadius: 5, // Optional: add rounded corners
+  },
+  active: {
+    backgroundColor: "#e0e0e0", // Optional: highlight active model
+  },
 });
 
 export default App;
-
-
-
-
-
-
