@@ -481,35 +481,35 @@ const CompareTranslate = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e0f7fa',
     flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#00796b',
   },
   subTitle: {
-    fontSize: 18,
+    fontSize: 20,
     marginVertical: 10,
-    color: '#ff7e5f',
+    color: '#00796b',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ff7e5f',
-    padding: 10,
+    borderColor: '#4a90e2',
+    padding: 12,
     marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
   },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 10,
-    backgroundColor: '#fff',
-    borderColor: '#ff7e5f',
+    backgroundColor: '#ffffff',
+    borderColor: '#4a90e2',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   modelRow: {
     flexDirection: 'row',
@@ -518,16 +518,16 @@ const styles = StyleSheet.create({
   },
   modelOption: {
     flex: 1,
-    padding: 10,
+    padding: 12,
     borderWidth: 1,
-    borderColor: "#ff7e5f",
+    borderColor: "#4a90e2",
     marginHorizontal: 5,
     alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
   },
   active: {
-    backgroundColor: "#ffe0e0",
+    backgroundColor: "#b2ebf2",
   },
   results: {
     marginTop: 20,
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 16,
-    color: '#000',
+    color: '#004d40',
   },
   errorText: {
     color: 'red',
@@ -545,14 +545,14 @@ const styles = StyleSheet.create({
   table: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ff7e5f',
-    borderRadius: 5,
+    borderColor: '#4a90e2',
+    borderRadius: 10,
     overflow: 'hidden',
     marginTop: 10,
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#ff7e5f',
+    backgroundColor: '#4a90e2',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
@@ -561,16 +561,16 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#fff',
+    color: '#ffffff',
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor : '#ddd',
   },
   tableCell: {
     flex: 1,
-    padding:  10,
+    padding: 10,
     textAlign: 'center',
     borderRightWidth: 1,
     borderRightColor: '#ddd',
@@ -579,6 +579,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
   },
 });
+
 
 
 export default App;
