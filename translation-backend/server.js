@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.json());
 
 // Supabase client setup
