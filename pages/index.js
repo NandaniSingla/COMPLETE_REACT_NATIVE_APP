@@ -119,6 +119,7 @@ const App = () => {
         } else if (model === 'gemini-1.5-pro-002') {
           result = await model4.generateContent(prompt);
         }
+        
 
         translatedText = result.response.text;
       } else if (model === 'deepl') {
