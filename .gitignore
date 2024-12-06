@@ -45,3 +45,5 @@ yarn-error.log*
 .pnp.js
 # @end @expo/next-adapter
 app.json
+
+translation-backend/node_modules/

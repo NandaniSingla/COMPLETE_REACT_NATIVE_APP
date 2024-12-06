@@ -19,7 +19,7 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Endpoint to save a translation
-app.post(" 192.168.56.1/api/translations", async (req, res) => {
+app.post("192.168.5.8/api/translations", async (req, res) => {
   const { original_message, translated_message, language, model, score } = req.body;
 
   // Validate input
@@ -31,7 +31,7 @@ app.post(" 192.168.56.1/api/translations", async (req, res) => {
     // Insert translation into the database
     const { data, error } = await supabase
       .from("translations") // Make sure the table exists in Supabase
-      .insert([{ original_message, translated_message, language, model, score }]);
+      .insert([{ original_message, translated_message, language, model}]);
 
     if (error) {
       return res.status(400).json({ error: error.message });
@@ -44,7 +44,7 @@ app.post(" 192.168.56.1/api/translations", async (req, res) => {
 });
 
 // Endpoint to fetch previous translations
-app.get(" 192.168.56.1/api/translations", async (req, res) => {
+app.get("192.168.5.8/api/translations", async (req, res) => {
   try {
     // Fetch translations from the database
     const { data, error } = await supabase
@@ -64,7 +64,7 @@ app.get(" 192.168.56.1/api/translations", async (req, res) => {
 });
 
 // Endpoint to save a comparison translation
-app.post(" 192.168.56.1/api/compareTranslate", async (req, res) => {
+app.post("192.168.5.8/api/compareTranslate", async (req, res) => {
   const { original_message, translated_message, language, model, score } = req.body;
 
   // Validate input
@@ -75,7 +75,7 @@ app.post(" 192.168.56.1/api/compareTranslate", async (req, res) => {
   try {
     // Insert comparison translation into the database
     const { data, error } = await supabase
-      .from(" 192.168.56.1/api/compareTranslate") // Make sure the table exists in Supabase
+      .from("192.168.5.8/api/compareTranslate") // Make sure the table exists in Supabase
       .insert([{ original_message, translated_message, language, model, score }]);
 
     if (error) {
@@ -89,7 +89,7 @@ app.post(" 192.168.56.1/api/compareTranslate", async (req, res) => {
 });
 
 // Endpoint to fetch previous comparison translations
-app.get(" 192.168.56.1/api/compare-translations", async (req, res) => {
+app.get("192.168.5.8/api/compare-translations", async (req, res) => {
   try {
     // Fetch comparison translations from the database
     const { data, error } = await supabase
@@ -112,5 +112,4 @@ app.get(" 192.168.56.1/api/compare-translations", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
-
 
